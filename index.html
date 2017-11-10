@@ -1,0 +1,59 @@
+<html>
+<body>
+    <script>
+
+    function test() {
+        const testArr = [1,2,3,4,5,6,7,8,9,10];
+        const pointer = wasm.getPointer(testArr.length);
+        writeBytes(window.heap.buffer, pointer, testArr)
+        console.log('sum =', wasm.sum(pointer, testArr.length));
+    }
+
+    function writeBytes(heap, pointer, array) {
+        const outBuf = new Uint8Array(heap, pointer, array.length);
+        for (let i = 0; i < array.length; i++) {
+            outBuf[i] = array[i];
+        }
+    }
+
+    fetch('fib.wasm').then(response =>
+        response.arrayBuffer()
+    ).then(bytes =>
+        WebAssembly.instantiate(bytes, {imports: {}})
+    ).then(results => {
+        window.wasm = results.instance.exports;
+        window.heap = results.instance.exports.memory;
+        test();
+    });
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- let i = 2,
+equal = true;
+while(equal) {
+    const wasmfib = wasm.fib(i);
+    const jsfib = simpleFib(i);
+
+    console.log(i, ':', wasmfib, jsfib);
+    
+    equal = wasmfib === jsfib && wasmfib !== Infinity && jsfib !== Infinity;
+    i++;
+} -->
