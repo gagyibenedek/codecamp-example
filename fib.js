@@ -4,6 +4,8 @@ require("webassembly")
 .load("fibc.wasm")
 .then(module => {
     const fib = module.exports.fib;
+    timer(fib, 15);
+    timer(simpleFib, 15);
 });
 
 function simpleFib(n) {
@@ -16,13 +18,12 @@ function simpleFib(n) {
 
 function timer(fn, input) {
     const t0 = present();
-    fn(input);
+    for(let i = 0; i < input; i++) {
+        fn(i);
+    }
     const t1 = present();
     console.log(t1 - t0);
 }
-
-
-
 
 
 
